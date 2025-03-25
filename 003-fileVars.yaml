@@ -2,6 +2,8 @@
   hosts: all
   vars:
     url: "play.google.com"
+  vars_files:
+    - "{{env}}-vars.yml"
   tasks:
     - name: Printing variables from file
       ansible.builtin.debug:
