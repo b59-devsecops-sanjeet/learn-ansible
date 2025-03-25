@@ -7,4 +7,4 @@
   tasks:
     - name: Printing variables from file
       ansible.builtin.debug:
-        msg: "Current Environment is  {{ ENV }} and the team name is {{DEVLEAD}} the value is {{A}}"
+        msg: "Current Environment is  {{ env }} and the team name is {{DEVLEAD}} the value is {{A}}"
