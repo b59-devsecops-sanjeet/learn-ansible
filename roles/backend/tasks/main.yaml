@@ -1,0 +1,50 @@
+- name: configuring hostname
+  ansible.builtin.shell: set-hostname {{ component }}
+
+- name: disabling the default node js version
+  ansible.builtin.shell: dnf module disable nodejs -y
+
+- name: installing nodejs
+  ansible.builtin.dnf:
+    name: nodejs
+    state: present
+
+- name: creating {{ appuser }} app user
+  ansible.builtin.user:
+    name: "{{ appuser }}"
+
+- name: Copying {{ component }} systemd file 
+  ansible.builtin.copy:
+    src: backend.service
+    dest: /etc/systemd/system/backend.service
+
+- name: Deleting the old {{ component }} directory
+  ansible.builtin.file:
+    path: {{app_dir}}
+    state: absent
+
+- name: creating app directory
+  ansible.builtin.file:
+    path: {{app_dir}}
+    state: absent
+
+- name: Download & extracting {{ component }} code
+  ansible.builtin.unarchive:
+    src: "{{ url }}"
+    dest: /usr/share/nginx/html
+    remote_src: yes
+
+- name: installing mysql client
+  ansible.builtin.package:
+    name: mysql-server
+    state: present
+
+# - name: Restarting {{ component }} service
+#   ansible.builtin.service:
+#     name: nginx
+#     state: restarted
+#     enabled: yes
+
+- name: Generating {{ component }} artifacts
+  community.general.npm:
+    path: "{{ app_dir }}"
