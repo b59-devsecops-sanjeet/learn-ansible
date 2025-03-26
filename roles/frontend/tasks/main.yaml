@@ -1,0 +1,33 @@
+- name: configuring hostname
+  ansible.builtin.shell: set-hostname {{ component }}
+
+- name: installing nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+- name: copying nginx proxy file
+  ansible.builtin.copy:
+    src: expense.conf
+    dest: "{{ proxy_path }}"
+
+- name: Cleanup of {{ component }} directory
+  ansible.builtin.file:
+    path: /usr/share/nginx/html
+    state: absent
+
+- name: creating html dir for {{ component }}
+  ansible.builtin.file:
+    path: "{{ component_path }}"
+    state: directory
+
+- name: Download & extracting {{ component }} code
+  ansible.builtin.unarchive:
+    src: "{{ url }}"
+    dest: /usr/share/nginx/html
+    remote_src: yes
+
+- name: Restarting nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
