@@ -48,3 +48,12 @@
 - name: Generating {{ component }} artifacts
   community.general.npm:
     path: "{{ app_dir }}"
+
+- name: Schema injection
+  community.mysql.mysql_db:
+    name: all
+    state: import
+    target: /app/schema/backend.sql
+    login_host: 172.31.15.238
+    login_user: root
+    login_password: ExpenseApp@1
